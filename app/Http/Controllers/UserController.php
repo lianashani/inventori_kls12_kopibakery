@@ -1,27 +1,19 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\User;
-
 use Illuminate\Http\Request;
-
-use function Laravel\Prompts\password;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-    $user = User::all();
-    return view("home.user.index", compact("user"));
-        //
+        $user = User::all();
+        return view("home.user.index", compact("user"));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view("home.user.tambah");
@@ -29,40 +21,54 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        // $request->validate([
-        //     'name' => 'required|min:3',
-        //     'email' => 'required',
-        //     'password' => 'required',
-        //     'role' => 'required',
+        $request->validate([
+            'email' => 'required|email|unique:users,email',
+            'role' => 'required|string|max:50',
+        ]);
 
-        // ]);
-     User::create([
-        "name"=> $request->name,
-        "email"=> $request->email,
-        "password"=> bcrypt($request->password),
-        "role"=> $request->role,
-     ]);
-      return redirect('/user')->with('success','User berhasil ditambahkan');
+        User::create([
+            'name' => $request->name ?? ($request->role . ' Baru'),
+            'email' => $request->email,
+            'role' => $request->role,
+            'password' => Hash::make('password123'), // default password
+            'must_change_password' => true
+        ]);
+
+        return redirect('/user')->with('success', 'User baru berhasil ditambahkan. Password default: password123');
     }
 
     public function show(string $id)
     {
-     $user = User::find($id);
-    return view('home.user.edit', compact('user'));
+        $user = User::findOrFail($id);
+        return view('home.user.edit', compact('user'));
     }
-
 
     public function update(Request $request, string $id)
     {
-
-    $user= User::find($id);
-    $user->update($request->all());
-    return redirect('/user')->with('success','User berhasil di edit');
+        $user = User::findOrFail($id);
+        $user->update($request->all());
+        return redirect('/user')->with('success', 'User berhasil diedit');
     }
 
     public function destroy(string $id)
     {
-    $user = User::find($id)->delete();
-    return redirect('/user')->with('success','User berhasil dihapus');
+        User::findOrFail($id)->delete();
+        return redirect('/user')->with('success', 'User berhasil dihapus');
     }
+
+    public function up()
+{
+    Schema::table('users', function (Blueprint $table) {
+        $table->boolean('must_change_password')->default(false);
+    });
 }
+
+public function down()
+{
+    Schema::table('users', function (Blueprint $table) {
+        $table->dropColumn('must_change_password');
+    });
+}
+
+}
+

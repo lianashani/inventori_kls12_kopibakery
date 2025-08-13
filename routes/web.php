@@ -8,6 +8,7 @@ use App\Http\Controllers\BarangMasukController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\BarangKeluarController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\RoleMiddleWare;
 use Illuminate\Support\Facades\Route;
 
@@ -29,7 +30,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/user/edit/{id}', [UserController::class,'show'])->middleware(RoleMiddleware::class    . ':admin');
         Route::post('user/update/{id}', [UserController::class,'update'])->middleware(RoleMiddleware::class    . ':admin');
 
-        Route::get('/user/hapus/{id}', [UserController::class,'destroy'])->middleware(RoleMiddleware::class    . ':admin');
+        Route::delete('/user/hapus/{id}', [UserController::class,'destroy'])->middleware(RoleMiddleware::class    . ':admin');
 
 
 
@@ -83,5 +84,9 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/barang_keluar/laporan', [BarangKeluarController::  class,'laporan']);
         Route::get('/barang_keluar/struk/{id}', [BarangKeluarController:: class,'struk']);
+
+        Route::get('/change-password', [ProfileController::class, 'showChangePassword'])->middleware('auth');
+        Route::post('/change-password/simpan', [ProfileController::class, 'updatePassword'])->middleware('auth');
+
 
 });

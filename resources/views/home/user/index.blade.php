@@ -40,9 +40,36 @@
 
                                             <td>
                                                 <a class="btn btn-outline-warning" href="/user/edit/{{$user->id}}">Edit</a>
-                                                <a class="btn btn-outline-danger" href="/user/hapus/{{$user->id}}">Hapus</a>
+                                                <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteModal{{$user->id}}">
+                                                        Hapus
+                                                    </button>
+ <!-- Modal -->
+    <div class="modal fade" id="deleteModal{{$user->id}}" tabindex="-1" aria-labelledby="deleteModalLabel{{$user->id}}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel{{$user->id}}">Konfirmasi Hap
+                        us</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Apakah Anda yakin ingin menghapus user <strong>{{$user->name}}</strong>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <form action="{{ url('/user/hapus', $user->id) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">Hapus</button>
+                    </form>
 
-                                            </td>
+                </div>
+            </div>
+        </div>
+    </div>
+                                                </td>
                                         </tr>
                                         @endforeach
 

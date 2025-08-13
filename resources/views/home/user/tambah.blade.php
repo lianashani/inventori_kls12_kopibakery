@@ -55,22 +55,6 @@
                             </div>
                             @enderror
 
-                            <div class="mb-3">
-                                <label for="" class="form-label">Password</label>
-                                <input
-                                    type="password"
-                                    class="form-control"
-                                    name="password"
-                                    id="password"
-                                    aria-describedby="helpId"
-                                    placeholder=""
-                                />
-                            </div>
-                            @error('password')
-                            <div class="alert alert-danger mt-2">
-                                {{$message}}
-                            </div>
-                            @enderror
 
                             <div class="mb-3">
                                 <label for="" class="form-label">Role</label>
